@@ -2,7 +2,6 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "char_list.h"
 #include "rpc_data.h"
 
 int main(int argc, char *argv[]) {
@@ -15,6 +14,6 @@ int main(int argc, char *argv[]) {
     print_list(new_list);
     puts("");
 
-    char_list *tokens = split_string(get_string(new_list, 0), " ");
-    print_list(tokens);
+    rpc_t *rpc = create_rpc_t_from_tokens(new_list);
+    print_rpc_t(rpc);
 }
