@@ -8,13 +8,13 @@ rpc_t *create_rpc_t_from_tokens(char_list *list) {
     rpc_t *rpc = malloc(sizeof(rpc_t));
 
     // function name
-    rpc->name = malloc(strlen(get_string(list, 0)) + 1);
+    rpc->name = malloc(strlen(get_string(list, 0)));
     char_list *name_list = split_string(get_string(list, 0), " /\n");
     strcpy(rpc->name, get_string(name_list, 1));
     free_list(name_list);
 
     // return type
-    rpc->return_type = malloc(strlen(get_string(list, 1)) + 1);
+    rpc->return_type = malloc(strlen(get_string(list, 1)));
     char_list *return_type_list = split_string(get_string(list, 1), " /\n");
     strcpy(rpc->return_type, get_string(return_type_list, 1));
     free_list(return_type_list);
@@ -24,11 +24,11 @@ rpc_t *create_rpc_t_from_tokens(char_list *list) {
     for (int i = 0; i < rpc->args_length; i++) {
         char_list *tokens = split_string(get_string(list, i + 2), " /\n");
 
-        rpc->args[i].type = malloc(strlen(get_string(tokens, 1)) + 1);
-        strcpy(rpc->args[i].type, get_string(tokens, 0));
+        rpc->args[i].type = malloc(strlen(get_string(tokens, 1)));
+        strcpy(rpc->args[i].type, get_string(tokens, 1));
 
-        rpc->args[i].name = malloc(strlen(get_string(tokens, 2)) + 1);
-        strcpy(rpc->args[i].name, get_string(tokens, 1));
+        rpc->args[i].name = malloc(strlen(get_string(tokens, 2)));
+        strcpy(rpc->args[i].name, get_string(tokens, 2));
 
         free_list(tokens);
     }
