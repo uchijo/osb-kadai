@@ -1,0 +1,20 @@
+{
+    name: hoge
+    return_type: int
+    arg: int a
+    arg: int b
+    arg: double a
+}
+
+{
+    name: hoge
+    return_type: int
+    arg: int a
+    arg: int b
+    arg: double a
+    name: hoge
+    return_type: int
+    arg: int a
+    arg: int b
+    arg: double a
+}
