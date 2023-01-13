@@ -109,3 +109,17 @@ void append_to_last(char *str, char *append, int max_length) {
     }
     str[str_length+append_length] = '\0';
 }
+
+char *generate_handler_invoker(rpc_t *rpc_data) {
+    char *first_line = malloc(MAX_LENGTH * sizeof(char));
+    char buf[256];
+
+    sprintf(first_line, "    if (strcmp(func_data->name, \"%s\") == 0) {\n", rpc_data->name);
+    sprintf(buf, "        char *retval = handle_%s(buf);\n", rpc_data->name);
+    append_to_last(first_line, buf, MAX_LENGTH);
+    append_to_last(first_line, "        send(sock, retval, strlen(retval), 0);\n", MAX_LENGTH);
+    append_to_last(first_line, "        free(retval);\n", MAX_LENGTH);
+    append_to_last(first_line, "    }\n", MAX_LENGTH);
+
+    return first_line;
+}

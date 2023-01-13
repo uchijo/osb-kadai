@@ -80,13 +80,17 @@ char *generate_server(rpc_t *rpc_data) {
 "\n"
 "    printf(\"message received: %s\\n\", buf);\n"
 "\n"
+"    func_call *func_data = decode_func_call(buf);\n"
 "    // varies on .rpch file\n"
 ;
     strcat(fragment1, fragment2);
 
     // deal with handler invocation
+    strcat(fragment1, generate_handler_invoker(rpc_data));
 
     fragment2 =
+"    free_func_call(func_data);\n"
+"    free(func_data);\n"
 "\n"
 "    printf(\"closing connection on socket %d\\n\\n\", sock);\n"
 "    close(sock);\n"

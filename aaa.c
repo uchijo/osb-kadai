@@ -72,7 +72,15 @@ void client_handler(int sock) {
 
     printf("message received: %s\n", buf);
 
+    func_call *func_data = decode_func_call(buf);
     // varies on .rpch file
+    if (strcmp(func_data->name, "hoge") == 0) {
+        char *retval = handle_hoge(buf);
+        send(sock, retval, strlen(retval), 0);
+        free(retval);
+    }
+    free_func_call(func_data);
+    free(func_data);
 
     printf("closing connection on socket %d\n\n", sock);
     close(sock);
