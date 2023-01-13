@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "gen_code.h"
+#include "gen_code_fragment.h"
 
 void exit_with_error(char *errorMessage, int line, char *file);
 void append_to_last(char *str, char *append);

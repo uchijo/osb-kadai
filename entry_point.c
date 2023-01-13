@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "gen_code.h"
+#include "gen_code_fragment.h"
 
 int main(int argc, char *argv[]) {
     char_list *list = read_file(argv[1]);
