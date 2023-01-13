@@ -32,7 +32,7 @@ char *get_result(char *message) {
 
     int num;
     char *buf = malloc(sizeof(char) * 512);
-    if ((num = recv(sock, buf, 511, 0)) <= 0) {
+    if ((num = recv(sock, buf, sizeof(char) * 511, 0)) <= 0) {
         exit_with_error("", __LINE__, __FILE__);
     }
 

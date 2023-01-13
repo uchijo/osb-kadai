@@ -5,7 +5,7 @@
 #include <sys/socket.h>
 #include <unistd.h>
 
-#include "message_manager.h"
+#include "tools/message_manager.h"
 
 // headers for rpc functions
 int hoge(
@@ -119,9 +119,10 @@ void client_handler(int sock) {
     char buf[1024];
     int mes_size;
 
-    if ((mes_size = recv(sock, buf, 1024, 0)) < 0) {
+    if ((mes_size = recv(sock, buf, 1024 * sizeof(char), 0)) < 0) {
         exit_with_error("", __LINE__, __FILE__);
     }
+    buf[mes_size] = '\0';
 
     printf("message received: %s\n", buf);
 

@@ -19,7 +19,7 @@ char *generate_server(rpc_t_list *rpc_data) {
 "#include <sys/socket.h>\n"
 "#include <unistd.h>\n"
 "\n"
-"#include \"message_manager.h\"\n"
+"#include \"tools/message_manager.h\"\n"
 "\n"
 "// headers for rpc functions\n\0"
 ;
@@ -78,9 +78,10 @@ char *generate_server(rpc_t_list *rpc_data) {
 "    char buf[1024];\n"
 "    int mes_size;\n"
 "\n"
-"    if ((mes_size = recv(sock, buf, 1024, 0)) < 0) {\n"
+"    if ((mes_size = recv(sock, buf, 1024 * sizeof(char), 0)) < 0) {\n"
 "        exit_with_error(\"\", __LINE__, __FILE__);\n"
 "    }\n"
+"    buf[mes_size] = '\0';\n"
 "\n"
 "    printf(\"message received: %s\\n\", buf);\n"
 "\n"
@@ -179,4 +180,28 @@ char *generate_client(rpc_t_list *rpc_data) {
     }
 
     return fragment1;
+}
+
+char *generate_server_template(rpc_t_list *rpc_data) {
+    char *accum = malloc(FRAGMENT_LENGTH * sizeof(char));
+
+    accum[0] = '\0';
+    for (int i=0; i<rpc_data->length; i++) {
+        append_to_last(accum, generate_function(rpc_data->rpc[i]), FRAGMENT_LENGTH);
+        append_to_last(accum, "\n", FRAGMENT_LENGTH);
+    }
+
+    return accum;
+}
+
+char *generate_client_header(rpc_t_list *rpc_data) {
+    char *accum = malloc(FRAGMENT_LENGTH * sizeof(char));
+
+    accum[0] = '\0';
+    for (int i=0; i<rpc_data->length; i++) {
+        append_to_last(accum, generate_header(rpc_data->rpc[i]), FRAGMENT_LENGTH);
+        append_to_last(accum, "\n", FRAGMENT_LENGTH);
+    }
+
+    return accum;
 }
