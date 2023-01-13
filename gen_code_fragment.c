@@ -149,3 +149,59 @@ char *generate_handler_invoker(rpc_t *rpc_data) {
 
     return first_line;
 }
+
+// generates the function that creates the message from rpc_t
+// message format: "function_name arg1 arg2 arg3 ..."
+char *generate_message_generator(rpc_t *rpc_data) {
+    char *first_line = malloc(MAX_LENGTH * sizeof(char));
+    char buf[256];
+
+    append_to_last(first_line, "    char *message = malloc(sizeof(char) * 1024);\n", MAX_LENGTH);
+    sprintf(buf, "    sprintf(message, \"%s", rpc_data->name);
+    append_to_last(first_line, buf, MAX_LENGTH);
+    for (int i=0; i<rpc_data->args_length; i++) {
+        append_to_last(first_line, " %", MAX_LENGTH);
+        if (i==rpc_data->args_length-1) {
+            sprintf(buf, " %c\",", gen_format_char(rpc_data->args[i].type));
+            append_to_last(first_line, buf, MAX_LENGTH);
+            break;
+        }
+        sprintf(buf, " %c", gen_format_char(rpc_data->args[i].type));
+        append_to_last(first_line, buf, MAX_LENGTH);
+    }
+    for (int i=0; i<rpc_data->args_length; i++) {
+        if (i==rpc_data->args_length-1) {
+            sprintf(buf, "%s);\n", rpc_data->args[i].name);
+            append_to_last(first_line, buf, MAX_LENGTH);
+            break;
+        }
+        sprintf(buf, "%s, ", rpc_data->args[i].name);
+        append_to_last(first_line, buf, MAX_LENGTH);
+    }
+
+    return first_line;
+}
+
+char *generate_retval_decoder(rpc_t *rpc_data) {
+    char *first_line = malloc(MAX_LENGTH * sizeof(char));
+    char buf[256];
+
+    if (strcmp(rpc_data->return_type, "char*") == 0) {
+        return "return retval";
+    }
+    if (strcmp(rpc_data->return_type, "char") == 0) {
+        return "return retval[0]";
+    }
+    if (strcmp(rpc_data->return_type, "int") == 0) {
+        append_to_last(first_line, "    int result = atoi(retval);\n", MAX_LENGTH);
+        append_to_last(first_line, "    free(retval);\n", MAX_LENGTH);
+        append_to_last(first_line, "    return result;\n", MAX_LENGTH);
+        return first_line;
+    }
+    if (strcmp(rpc_data->return_type, "float") == 0) {
+        append_to_last(first_line, "    float result = atof(retval);\n", MAX_LENGTH);
+        append_to_last(first_line, "    free(retval);\n", MAX_LENGTH);
+        append_to_last(first_line, "    return result;\n", MAX_LENGTH);
+        return first_line;
+    }
+}

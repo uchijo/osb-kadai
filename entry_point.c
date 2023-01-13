@@ -19,5 +19,10 @@ int main(int argc, char *argv[]) {
     char *handler_result = request_handler_generator(rpc);
 
     char *server_file = generate_server(rpc);
-    puts(server_file);
+    
+    char *hoge_message_gen = generate_message_generator(rpc);
+    char *hoge_retval_dec = generate_retval_decoder(rpc);
+
+    char *client_code = generate_client(rpc);
+    puts(client_code);
 }

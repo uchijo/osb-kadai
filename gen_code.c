@@ -101,3 +101,73 @@ char *generate_server(rpc_t *rpc_data) {
 
     return fragment1;
 }
+
+char *generate_client(rpc_t *rpc_data) {
+    char *fragment1 = malloc(FRAGMENT_LENGTH * sizeof(char));
+    char *fragment2 = malloc(FRAGMENT_LENGTH * sizeof(char));
+
+    fragment1[0] = '\0';
+    char *tmp =
+"#include <arpa/inet.h>\n"
+"#include <stdio.h>\n"
+"#include <stdlib.h>\n"
+"#include <string.h>\n"
+"#include <sys/socket.h>\n"
+"#include <unistd.h>\n"
+"\n"
+"void exit_with_error(char *errorMessage, int line, char *file);\n"
+"\n"
+"char *get_result(char *message) {\n"
+"    int port = 5000;\n"
+"    char *ip = \"127.0.0.1\";\n"
+"    int len = strlen(message);\n"
+"    int sock;\n"
+"\n"
+"    if ((sock = socket(PF_INET, SOCK_STREAM, IPPROTO_TCP)) < 0) {\n"
+"        exit_with_error(\"\", __LINE__, __FILE__);\n"
+"    }\n"
+"\n"
+"    struct sockaddr_in addr;\n"
+"    addr.sin_family = AF_INET;\n"
+"    addr.sin_addr.s_addr = inet_addr(ip);\n"
+"    addr.sin_port = htons(port);\n"
+"\n"
+"    if (connect(sock, (struct sockaddr *)&addr, sizeof(addr)) < 0) {\n"
+"        exit_with_error(\"\", __LINE__, __FILE__);\n"
+"    }\n"
+"\n"
+"    if (send(sock, message, len, 0) != len) {\n"
+"        exit_with_error(\"\", __LINE__, __FILE__);\n"
+"    }\n"
+"\n"
+"    int num;\n"
+"    char *buf = malloc(sizeof(char) * 512);\n"
+"    if ((num = recv(sock, buf, 511, 0)) <= 0) {\n"
+"        exit_with_error(\"\", __LINE__, __FILE__);\n"
+"    }\n"
+"\n"
+"    buf[num] = '\\0';\n"
+"\n"
+"    close(sock);\n"
+"    return buf;\n"
+"}\n\n";
+    append_to_last(fragment1, tmp, FRAGMENT_LENGTH);
+
+    // generate function itself
+    sprintf(fragment2, "%s %s(\n", rpc_data->return_type, rpc_data->name);
+    append_to_last(fragment1, fragment2, FRAGMENT_LENGTH);
+    for (int i=0; i<rpc_data->args_length; i++) {
+        sprintf(fragment2, "    %s %s", rpc_data->args[i].type, rpc_data->args[i].name);
+        append_to_last(fragment1, fragment2, FRAGMENT_LENGTH);
+        if (i != rpc_data->args_length - 1) {
+            append_to_last(fragment1, ",\n", FRAGMENT_LENGTH);
+        }
+    }
+    append_to_last(fragment1, "\n) {\n", FRAGMENT_LENGTH);
+    append_to_last(fragment1, generate_message_generator(rpc_data), FRAGMENT_LENGTH);
+    append_to_last(fragment1, "    char *retval = get_result(message);", FRAGMENT_LENGTH);
+    append_to_last(fragment1, generate_retval_decoder(rpc_data), FRAGMENT_LENGTH);
+    append_to_last(fragment1, "}", FRAGMENT_LENGTH);
+
+    return fragment1;
+}

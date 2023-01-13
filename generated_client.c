@@ -31,7 +31,7 @@ char *get_result(char *message) {
     }
 
     int num;
-    char buf[512];
+    char *buf = malloc(sizeof(char) * 512);
     if ((num = recv(sock, buf, 511, 0)) <= 0) {
         exit_with_error("", __LINE__, __FILE__);
     }
@@ -42,22 +42,22 @@ char *get_result(char *message) {
     return buf;
 }
 
-// depends on rpc_t
-int hoge(int a, int b, double c) {
-    // generate message
-    char *mes = "hoge 100 1 1.01";
-    
-    // get result
-    char *result = get_result(mes);
-
-    // parse result
-    int ret;
-    sscanf(result, "%d", &ret);
-    return ret;
+int hoge(
+    int a,
+    int b,
+    float c
+) {
+    char *message = malloc(sizeof(char) * 1024);
+    sprintf(message, "hoge % d % d % f",a, b, c);
+    char *retval = get_result(message);    int result = atoi(retval);
+    free(retval);
+    return result;
 }
 
-char *generate_hoge_message(int a, int b, double c) {
-    char *mes = malloc(100 * sizeof(char));
-    sprintf(mes, "hoge %d %d %f", a, b, c);
-    return mes;
+int main() {
+    int a = 100;
+    int b = 1;
+    float c = 1.01;
+    int result = hoge(a, b, c);
+    printf("result : %d\n", result);
 }

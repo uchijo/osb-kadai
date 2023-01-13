@@ -26,13 +26,11 @@ int main() {
     if (connect(sock, (struct sockaddr *)&addr, sizeof(addr)) < 0) {
         exit_with_error(__LINE__);
     }
-    puts("connected.");
 
     if (send(sock, mes, len, 0) != len) {
         exit_with_error(__LINE__);
     }
 
-    printf("RECEIVED: ");
     int num;
     char buf[50];
     if ((num = recv(sock, buf, 49, 0)) <= 0) {
