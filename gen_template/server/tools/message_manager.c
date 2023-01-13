@@ -8,7 +8,7 @@
 // string format is: "function_name arg1_value arg2_value ..."
 func_call *decode_func_call(char *str) {
     func_call *call = malloc(sizeof(func_call));
-    char_list *list = split_string(str, " /\n");
+    char_list *list = split_string(str, "|\n");
     call->name = malloc(strlen(get_string(list, 0)) + 1);
     strcpy(call->name, get_string(list, 0));
     call->value = sublist(list, 1, length(list) - 1);

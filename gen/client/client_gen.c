@@ -32,7 +32,7 @@ char *get_result(char *message) {
 
     int num;
     char *buf = malloc(sizeof(char) * 512);
-    if ((num = recv(sock, buf, sizeof(char) * 511, 0)) <= 0) {
+    if ((num = recv(sock, buf, 511, 0)) <= 0) {
         exit_with_error("", __LINE__, __FILE__);
     }
 
@@ -48,7 +48,7 @@ int hoge(
     float c
 ) {
     char *message = malloc(sizeof(char) * 1024);
-    sprintf(message, "hoge %d %d %f",a, b, c);
+    sprintf(message, "hoge|%d|%d|%f",a, b, c);
     char *retval = get_result(message);
     int result = atoi(retval);
     free(retval);
@@ -60,7 +60,7 @@ float fuga(
     float bbbb
 ) {
     char *message = malloc(sizeof(char) * 1024);
-    sprintf(message, "fuga %f %f",aaa, bbbb);
+    sprintf(message, "fuga|%f|%f",aaa, bbbb);
     char *retval = get_result(message);
     float result = atof(retval);
     free(retval);
@@ -72,7 +72,7 @@ char* piyo(
     char* testtest
 ) {
     char *message = malloc(sizeof(char) * 1024);
-    sprintf(message, "piyo %s %s",test, testtest);
+    sprintf(message, "piyo|%s|%s",test, testtest);
     char *retval = get_result(message);
     return retval;
 }
@@ -81,7 +81,7 @@ int bar(
     int test
 ) {
     char *message = malloc(sizeof(char) * 1024);
-    sprintf(message, "bar %d",test);
+    sprintf(message, "bar|%d",test);
     char *retval = get_result(message);
     int result = atoi(retval);
     free(retval);

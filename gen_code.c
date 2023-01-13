@@ -20,6 +20,7 @@ char *generate_server(rpc_t_list *rpc_data) {
 "#include <unistd.h>\n"
 "\n"
 "#include \"tools/message_manager.h\"\n"
+"void exit_with_error(char *errorMessage, int line, char *file);"
 "\n"
 "// headers for rpc functions\n\0"
 ;
@@ -81,7 +82,7 @@ char *generate_server(rpc_t_list *rpc_data) {
 "    if ((mes_size = recv(sock, buf, 1024 * sizeof(char), 0)) < 0) {\n"
 "        exit_with_error(\"\", __LINE__, __FILE__);\n"
 "    }\n"
-"    buf[mes_size] = '\0';\n"
+"    buf[mes_size] = '\\0';\n"
 "\n"
 "    printf(\"message received: %s\\n\", buf);\n"
 "\n"

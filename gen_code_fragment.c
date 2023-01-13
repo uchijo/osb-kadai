@@ -160,7 +160,7 @@ char *generate_message_generator(rpc_t *rpc_data) {
     sprintf(buf, "    sprintf(message, \"%s", rpc_data->name);
     append_to_last(first_line, buf, MAX_LENGTH);
     for (int i=0; i<rpc_data->args_length; i++) {
-        append_to_last(first_line, " %", MAX_LENGTH);
+        append_to_last(first_line, "|%", MAX_LENGTH);
         if (i==rpc_data->args_length-1) {
             sprintf(buf, "%c\",", gen_format_char(rpc_data->args[i].type));
             append_to_last(first_line, buf, MAX_LENGTH);
