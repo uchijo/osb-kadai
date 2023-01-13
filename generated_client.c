@@ -48,16 +48,26 @@ int hoge(
     float c
 ) {
     char *message = malloc(sizeof(char) * 1024);
-    sprintf(message, "hoge % d % d % f",a, b, c);
+    sprintf(message, "hoge %d %d %f",a, b, c);
     char *retval = get_result(message);    int result = atoi(retval);
     free(retval);
     return result;
 }
 
+float fuga(
+    float aaa,
+    float bbbb
+) {
+    char *message = malloc(sizeof(char) * 1024);
+    sprintf(message, "fuga %f %f",aaa, bbbb);
+    char *retval = get_result(message);    float result = atof(retval);
+    free(retval);
+    return result;
+}
+
 int main() {
-    int a = 100;
-    int b = 1;
-    float c = 1.01;
-    int result = hoge(a, b, c);
-    printf("result : %d\n", result);
+    int hoge_result = hoge(100, 50, 1.01);
+    printf("hoge_result: %d\n", hoge_result);
+    float fuga_result = fuga(10.0, 3.0);
+    printf("fuga_result: %f\n", fuga_result);
 }

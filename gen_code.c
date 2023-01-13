@@ -6,7 +6,7 @@
 
 void exit_with_error(char *errorMessage, int line, char *file);
 
-char *generate_server(rpc_t *rpc_data) {
+char *generate_server(rpc_t_list *rpc_data) {
     char *fragment1 = malloc(FRAGMENT_LENGTH * sizeof(char));
     char *fragment2;
 
@@ -25,7 +25,9 @@ char *generate_server(rpc_t *rpc_data) {
 ;
 
     append_to_last(fragment1, fragment2, FRAGMENT_LENGTH);
-    append_to_last(fragment1, generate_header(rpc_data), FRAGMENT_LENGTH);
+    for (int i=0; i<rpc_data->length; i++) {
+        append_to_last(fragment1, generate_header(rpc_data->rpc[i]), FRAGMENT_LENGTH);
+    }
 
     fragment2 =
 ""
@@ -67,7 +69,9 @@ char *generate_server(rpc_t *rpc_data) {
 ;
 
     strcat(fragment1, fragment2);
-    strcat(fragment1, request_handler_generator(rpc_data));
+    for (int i=0; i<rpc_data->length; i++) {
+        strcat(fragment1, request_handler_generator(rpc_data->rpc[i]));
+    }
 
     fragment2 = 
 "void client_handler(int sock) {\n"
@@ -86,7 +90,9 @@ char *generate_server(rpc_t *rpc_data) {
     strcat(fragment1, fragment2);
 
     // deal with handler invocation
-    strcat(fragment1, generate_handler_invoker(rpc_data));
+    for (int i=0; i<rpc_data->length; i++) {
+        strcat(fragment1, generate_handler_invoker(rpc_data->rpc[i]));
+    }
 
     fragment2 =
 "    free_func_call(func_data);\n"
@@ -102,7 +108,7 @@ char *generate_server(rpc_t *rpc_data) {
     return fragment1;
 }
 
-char *generate_client(rpc_t *rpc_data) {
+char *generate_client(rpc_t_list *rpc_data) {
     char *fragment1 = malloc(FRAGMENT_LENGTH * sizeof(char));
     char *fragment2 = malloc(FRAGMENT_LENGTH * sizeof(char));
 
@@ -154,20 +160,23 @@ char *generate_client(rpc_t *rpc_data) {
     append_to_last(fragment1, tmp, FRAGMENT_LENGTH);
 
     // generate function itself
-    sprintf(fragment2, "%s %s(\n", rpc_data->return_type, rpc_data->name);
-    append_to_last(fragment1, fragment2, FRAGMENT_LENGTH);
-    for (int i=0; i<rpc_data->args_length; i++) {
-        sprintf(fragment2, "    %s %s", rpc_data->args[i].type, rpc_data->args[i].name);
+    for (int i=0; i<rpc_data->length; i++) {
+        rpc_t *elem = rpc_data->rpc[i];
+        sprintf(fragment2, "%s %s(\n", elem->return_type, elem->name);
         append_to_last(fragment1, fragment2, FRAGMENT_LENGTH);
-        if (i != rpc_data->args_length - 1) {
-            append_to_last(fragment1, ",\n", FRAGMENT_LENGTH);
+        for (int i=0; i<elem->args_length; i++) {
+            sprintf(fragment2, "    %s %s", elem->args[i].type, elem->args[i].name);
+            append_to_last(fragment1, fragment2, FRAGMENT_LENGTH);
+            if (i != elem->args_length - 1) {
+                append_to_last(fragment1, ",\n", FRAGMENT_LENGTH);
+            }
         }
+        append_to_last(fragment1, "\n) {\n", FRAGMENT_LENGTH);
+        append_to_last(fragment1, generate_message_generator(elem), FRAGMENT_LENGTH);
+        append_to_last(fragment1, "    char *retval = get_result(message);", FRAGMENT_LENGTH);
+        append_to_last(fragment1, generate_retval_decoder(elem), FRAGMENT_LENGTH);
+        append_to_last(fragment1, "}\n\n", FRAGMENT_LENGTH);
     }
-    append_to_last(fragment1, "\n) {\n", FRAGMENT_LENGTH);
-    append_to_last(fragment1, generate_message_generator(rpc_data), FRAGMENT_LENGTH);
-    append_to_last(fragment1, "    char *retval = get_result(message);", FRAGMENT_LENGTH);
-    append_to_last(fragment1, generate_retval_decoder(rpc_data), FRAGMENT_LENGTH);
-    append_to_last(fragment1, "}", FRAGMENT_LENGTH);
 
     return fragment1;
 }

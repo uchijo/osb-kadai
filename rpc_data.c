@@ -43,3 +43,26 @@ void print_rpc_t(rpc_t *rpc) {
         printf("arg %d: %s %s\n", i, rpc->args[i].type, rpc->args[i].name);
     }
 }
+
+rpc_t_list *parse_def(char *path) {
+    char_list *list = read_file(path);
+    rpc_t_list *rpcs = malloc(sizeof(rpc_t *));
+    rpcs->rpc = malloc(sizeof(rpc_t **));
+    rpcs->length = 0;
+
+    while(length(list) > 5) {
+        int start_index = index_of(list, "{\n");
+        int end_index = index_of(list, "}\n");
+
+        char_list *new_list = sublist(list, start_index+1, end_index-1);
+        rpcs->rpc = realloc(rpcs->rpc, sizeof(rpc_t *) * (rpcs->length + 1));
+        rpcs->rpc[rpcs->length] = create_rpc_t_from_tokens(new_list);
+        rpcs->length++;
+
+        list = sublist(list, end_index+1, length(list)-1);
+    }
+
+    free_list(list);
+
+    return rpcs;
+}

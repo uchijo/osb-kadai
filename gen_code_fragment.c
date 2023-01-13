@@ -162,11 +162,11 @@ char *generate_message_generator(rpc_t *rpc_data) {
     for (int i=0; i<rpc_data->args_length; i++) {
         append_to_last(first_line, " %", MAX_LENGTH);
         if (i==rpc_data->args_length-1) {
-            sprintf(buf, " %c\",", gen_format_char(rpc_data->args[i].type));
+            sprintf(buf, "%c\",", gen_format_char(rpc_data->args[i].type));
             append_to_last(first_line, buf, MAX_LENGTH);
             break;
         }
-        sprintf(buf, " %c", gen_format_char(rpc_data->args[i].type));
+        sprintf(buf, "%c", gen_format_char(rpc_data->args[i].type));
         append_to_last(first_line, buf, MAX_LENGTH);
     }
     for (int i=0; i<rpc_data->args_length; i++) {

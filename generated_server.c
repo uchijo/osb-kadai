@@ -13,6 +13,10 @@ int hoge(
   int b,
   float c
 );
+float fuga(
+  float aaa,
+  float bbbb
+);
 int main() {
     int port = 5000;
     struct sockaddr_in client;
@@ -63,6 +67,20 @@ char *handle_hoge (char *message) {
     free_func_call(func_data);
     return retval;
 }
+char *handle_fuga (char *message) {
+    func_call *func_data = decode_func_call(message);
+    char *retval = malloc(sizeof(char) * 1024);
+
+    // varies depending on the function
+    float result = fuga(
+        atof(get_string(func_data->value, 0)),
+        atof(get_string(func_data->value, 1))
+    );
+
+    sprintf(retval, "%f", result);
+    free_func_call(func_data);
+    return retval;
+}
 void client_handler(int sock) {
     char buf[1024];
     int mes_size;
@@ -80,6 +98,11 @@ void client_handler(int sock) {
         send(sock, retval, strlen(retval), 0);
         free(retval);
     }
+    if (strcmp(func_data->name, "fuga") == 0) {
+        char *retval = handle_fuga(buf);
+        send(sock, retval, strlen(retval), 0);
+        free(retval);
+    }
     free_func_call(func_data);
 
     printf("closing connection on socket %d\n", sock);
@@ -93,4 +116,10 @@ int hoge(
   float c
 ) {
     return a + b;
+}
+float fuga(
+  float aaa,
+  float bbbb
+) {
+    return aaa/bbbb;
 }
