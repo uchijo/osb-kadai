@@ -16,4 +16,7 @@ int main(int argc, char *argv[]) {
 
     char *func_result = generate_function(rpc);
     char *header_result = generate_header(rpc);
+    char *handler_result = request_handler_generator(rpc);
+    puts(func_result);
+    puts(handler_result);
 }
