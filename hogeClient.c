@@ -5,7 +5,7 @@
 #include <sys/socket.h>
 #include <unistd.h>
 
-void error_message(int line);
+void exit_with_error(int line);
 
 int main() {
     int port = 5000;
@@ -15,7 +15,7 @@ int main() {
     int sock;
 
     if ((sock = socket(PF_INET, SOCK_STREAM, IPPROTO_TCP)) < 0) {
-        error_message(__LINE__);
+        exit_with_error(__LINE__);
     }
 
     struct sockaddr_in addr;
@@ -24,11 +24,11 @@ int main() {
     addr.sin_port = htons(port);
 
     if (connect(sock, (struct sockaddr *)&addr, sizeof(addr)) < 0) {
-        error_message(__LINE__);
+        exit_with_error(__LINE__);
     }
 
     if (send(sock, mes, len, 0) != len) {
-        error_message(__LINE__);
+        exit_with_error(__LINE__);
     }
 
     printf("RECEIVED: ");
@@ -37,7 +37,7 @@ int main() {
     char buf[50];
     while (total < len) {
         if ((num = recv(sock, buf, 49, 0)) <= 0) {
-            error_message(__LINE__);
+            exit_with_error(__LINE__);
         }
 
         total += num;
@@ -51,7 +51,7 @@ int main() {
     return 1;
 }
 
-void error_message(int line) {
+void exit_with_error(int line) {
     printf("ERROR: LINE %d", line);
     exit(1);
 }
