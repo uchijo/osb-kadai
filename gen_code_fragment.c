@@ -6,6 +6,7 @@
 
 void exit_with_error(char *errorMessage, int line, char *file);
 char *gen_type_parser(arg_t *arg);
+char gen_format_char(char *type);
 
 char *generate_function(rpc_t *rpc_data) {
     char *first_line = malloc(MAX_LENGTH * sizeof(char));
@@ -74,6 +75,15 @@ char *request_handler_generator(rpc_t *rpc_data) {
         append_to_last(first_line, buf, MAX_LENGTH);
     }
 
+    // manage return value
+    if (strcmp(rpc_data->return_type, "void") == 0) {
+        append_to_last(first_line, "    // no return value\n", MAX_LENGTH);
+    } else {
+        append_to_last(first_line, "    sprintf(retval, \"%", MAX_LENGTH);
+        sprintf(buf, "%c\", result);\n", gen_format_char(rpc_data->return_type));
+        append_to_last(first_line, buf, MAX_LENGTH);
+    }
+
     append_to_last(first_line, "    free_func_call(func_data);\n", MAX_LENGTH);
     append_to_last(first_line, "    return retval;\n", MAX_LENGTH);
     append_to_last(first_line, "}\n", MAX_LENGTH);
@@ -94,6 +104,22 @@ char *gen_type_parser(arg_t *arg) {
 
     // default
     printf("given type: %s\n", arg->type);
+    exit_with_error("Unknown type", __LINE__, __FILE__);
+}
+
+char gen_format_char(char *type) {
+    if (strcmp(type, "int") == 0) {
+        return 'd';
+    }
+    if (strcmp(type, "float") == 0) {
+        return 'f';
+    }
+    if (strcmp(type, "char") == 0) {
+        return 's';
+    }
+
+    // default
+    printf("given type: %s\n", type);
     exit_with_error("Unknown type", __LINE__, __FILE__);
 }
 

@@ -9,7 +9,7 @@ void exit_with_error(int line);
 
 int main() {
     int port = 5000;
-    char *mes = "100 1";
+    char *mes = "hoge 100 1 1.01";
     char *ip = "127.0.0.1";
     int len = strlen(mes);
     int sock;
@@ -26,28 +26,24 @@ int main() {
     if (connect(sock, (struct sockaddr *)&addr, sizeof(addr)) < 0) {
         exit_with_error(__LINE__);
     }
+    puts("connected.");
 
     if (send(sock, mes, len, 0) != len) {
         exit_with_error(__LINE__);
     }
 
     printf("RECEIVED: ");
-    int total = 0;
     int num;
     char buf[50];
-    while (total < len) {
-        if ((num = recv(sock, buf, 49, 0)) <= 0) {
-            exit_with_error(__LINE__);
-        }
-
-        total += num;
-        buf[num] = '\0';
-        printf("%s", buf);
+    if ((num = recv(sock, buf, 49, 0)) <= 0) {
+        exit_with_error(__LINE__);
     }
+
+    buf[num] = '\0';
+    printf("%s", buf);
 
     printf("\n");
     close(sock);
-    exit(1);
     return 1;
 }
 

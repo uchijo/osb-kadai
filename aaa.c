@@ -59,6 +59,7 @@ char *handle_hoge (char *message) {
         atof(get_string(func_data->value, 2))
     );
 
+    sprintf(retval, "%d", result);
     free_func_call(func_data);
     return retval;
 }
@@ -80,9 +81,16 @@ void client_handler(int sock) {
         free(retval);
     }
     free_func_call(func_data);
-    free(func_data);
 
-    printf("closing connection on socket %d\n\n", sock);
+    printf("closing connection on socket %d\n", sock);
     close(sock);
-    puts("closed!");
+    puts("closed!\n");
+}
+
+int hoge(
+  int a,
+  int b,
+  float c
+) {
+    return a+b;
 }

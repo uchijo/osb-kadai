@@ -90,11 +90,10 @@ char *generate_server(rpc_t *rpc_data) {
 
     fragment2 =
 "    free_func_call(func_data);\n"
-"    free(func_data);\n"
 "\n"
-"    printf(\"closing connection on socket %d\\n\\n\", sock);\n"
+"    printf(\"closing connection on socket %d\\n\", sock);\n"
 "    close(sock);\n"
-"    puts(\"closed!\");\n"
+"    puts(\"closed!\\n\");\n"
 "}\n"
 "\n"
 ;
