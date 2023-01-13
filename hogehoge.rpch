@@ -12,3 +12,16 @@
     arg: float aaa
     arg: float bbbb
 }
+
+{
+    name: piyo
+    return_type: char*
+    arg: char* test
+    arg: char* testtest
+}
+
+{
+    name: bar
+    return_type: int
+    arg: int test
+}

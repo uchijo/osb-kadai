@@ -16,14 +16,14 @@ char *generate_function(rpc_t *rpc_data) {
 
     for (int i=0; i<rpc_data->args_length; i++) {
         if (i==rpc_data->args_length-1) {
-            sprintf(buf, "  %s %s\n", rpc_data->args[i].type, rpc_data->args[i].name);
+            sprintf(buf, "    %s %s\n", rpc_data->args[i].type, rpc_data->args[i].name);
             append_to_last(first_line, buf, MAX_LENGTH);
             append_to_last(first_line, ") {\n", MAX_LENGTH);
-            append_to_last(first_line, "  // TODO: implement this function\n", MAX_LENGTH);
+            append_to_last(first_line, "    // TODO: implement this function\n", MAX_LENGTH);
             append_to_last(first_line, "}\n", MAX_LENGTH);
             break;
         }
-        sprintf(buf, "  %s %s,\n" , rpc_data->args[i].type, rpc_data->args[i].name);
+        sprintf(buf, "    %s %s,\n" , rpc_data->args[i].type, rpc_data->args[i].name);
         append_to_last(first_line, buf, MAX_LENGTH);
     }
 
@@ -38,12 +38,12 @@ char *generate_header(rpc_t *rpc_data) {
 
     for (int i=0; i<rpc_data->args_length; i++) {
         if (i==rpc_data->args_length-1) {
-            sprintf(buf, "  %s %s\n", rpc_data->args[i].type, rpc_data->args[i].name);
+            sprintf(buf, "    %s %s\n", rpc_data->args[i].type, rpc_data->args[i].name);
             append_to_last(first_line, buf, MAX_LENGTH);
             append_to_last(first_line, ");\n", MAX_LENGTH);
             break;
         }
-        sprintf(buf, "  %s %s,\n" , rpc_data->args[i].type, rpc_data->args[i].name);
+        sprintf(buf, "    %s %s,\n" , rpc_data->args[i].type, rpc_data->args[i].name);
         append_to_last(first_line, buf, MAX_LENGTH);
     }
 
@@ -98,7 +98,7 @@ char *gen_type_parser(arg_t *arg) {
     if (strcmp(arg->type, "float") == 0) {
         return "atof";
     }
-    if (strcmp(arg->type, "char") == 0) {
+    if (strcmp(arg->type, "char*") == 0) {
         return "";
     }
 
@@ -114,7 +114,7 @@ char gen_format_char(char *type) {
     if (strcmp(type, "float") == 0) {
         return 'f';
     }
-    if (strcmp(type, "char") == 0) {
+    if (strcmp(type, "char*") == 0) {
         return 's';
     }
 
@@ -187,10 +187,10 @@ char *generate_retval_decoder(rpc_t *rpc_data) {
     char buf[256];
 
     if (strcmp(rpc_data->return_type, "char*") == 0) {
-        return "return retval";
+        return "    return retval;\n";
     }
     if (strcmp(rpc_data->return_type, "char") == 0) {
-        return "return retval[0]";
+        return "    return retval[0]\n";
     }
     if (strcmp(rpc_data->return_type, "int") == 0) {
         append_to_last(first_line, "    int result = atoi(retval);\n", MAX_LENGTH);

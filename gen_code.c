@@ -173,7 +173,7 @@ char *generate_client(rpc_t_list *rpc_data) {
         }
         append_to_last(fragment1, "\n) {\n", FRAGMENT_LENGTH);
         append_to_last(fragment1, generate_message_generator(elem), FRAGMENT_LENGTH);
-        append_to_last(fragment1, "    char *retval = get_result(message);", FRAGMENT_LENGTH);
+        append_to_last(fragment1, "    char *retval = get_result(message);\n", FRAGMENT_LENGTH);
         append_to_last(fragment1, generate_retval_decoder(elem), FRAGMENT_LENGTH);
         append_to_last(fragment1, "}\n\n", FRAGMENT_LENGTH);
     }
