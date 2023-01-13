@@ -20,7 +20,8 @@ char *generate_server(rpc_t_list *rpc_data) {
 "#include <unistd.h>\n"
 "\n"
 "#include \"tools/message_manager.h\"\n"
-"void exit_with_error(char *errorMessage, int line, char *file);"
+"void exit_with_error(char *errorMessage, int line, char *file);\n"
+"void client_handler(int sock);\n"
 "\n"
 "// headers for rpc functions\n\0"
 ;

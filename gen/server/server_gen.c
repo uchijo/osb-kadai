@@ -7,6 +7,8 @@
 
 #include "tools/message_manager.h"
 void exit_with_error(char *errorMessage, int line, char *file);
+void client_handler(int sock);
+
 // headers for rpc functions
 int hoge(
     int a,
