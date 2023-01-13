@@ -95,3 +95,21 @@ void handle_client(int sock) {
 
     close(sock);
 }
+
+void handle_client2(int sock) {
+    char buf[300];
+    int mes_size;
+
+    if ((mes_size = recv(sock, buf, 300, 0)) < 0) {
+        exit_with_error("", __LINE__, __FILE__);
+    }
+
+    printf("message received: %s\n", buf);
+
+    // varies on .rpch file
+    
+
+    printf("closing connection on socket %d\n\n", sock);
+    close(sock);
+    printf("closed!");
+}
